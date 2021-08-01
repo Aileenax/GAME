@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using GramGames.CraftingSystem.DataContainers;
 
-public class Game : MonoBehaviour
+public class Game : Singleton<Game>
 {
 	public MergableItem DraggableObjectPrefab;
 	public GridHandler MainGrid;
 
-	private List<string> ActiveRecipes = new List<string>();
+	private List<string> _activeRecipes = new List<string>();
 
-	private void Awake()
+	protected override void Awake()
 	{
+		base.Awake();
+
 		Screen.fullScreen =
 			false; // https://issuetracker.unity3d.com/issues/game-is-not-built-in-windowed-mode-when-changing-the-build-settings-from-exclusive-fullscreen
 
@@ -26,28 +29,32 @@ public class Game : MonoBehaviour
 	public void ReloadLevel(int difficulty = 1)
 	{
 		// clear the board
-		var fullCells = MainGrid.GetFullCells.ToArray();
+		GridCell[] fullCells = MainGrid.GetFullCells.ToArray();
+
 		for (int i = fullCells.Length - 1; i >= 0; i--)
 			MainGrid.ClearCell(fullCells[i]);
 
 		// choose new recipes
-		ActiveRecipes.Clear();
+		_activeRecipes.Clear();
 		difficulty = Mathf.Max(difficulty, 1);
+
 		for (int i = 0; i < difficulty; i++)
 		{
 			// a 'recipe' has more than 1 ingredient, else it is just a raw ingredient.
-			var recipe = ItemUtils.RecipeMap.FirstOrDefault(kvp => kvp.Value.Count > 1).Key;
-			ActiveRecipes.Add(recipe);
+			string recipe = ItemUtils.RecipeMap.FirstOrDefault(kvp => kvp.Value.Count > 1).Key;
+			_activeRecipes.Add(recipe);
 		}
 
 		// populate the board
-		var emptyCells = MainGrid.GetEmptyCells.ToArray();
-		foreach (var cell in emptyCells)
+		GridCell[] emptyCells = MainGrid.GetEmptyCells.ToArray();
+
+		foreach (GridCell cell in emptyCells)
 		{
-			var chosenRecipe = ActiveRecipes[0];
-			var ingredients = ItemUtils.RecipeMap[chosenRecipe].ToArray();
-			var ingredient = ingredients[0];
-			var item = ItemUtils.ItemsMap[ingredient.NodeGUID];
+			string chosenRecipe = _activeRecipes[0];
+			NodeData[] ingredients = ItemUtils.RecipeMap[chosenRecipe].ToArray();
+			NodeData ingredient = ingredients[0];
+			NodeContainer item = ItemUtils.ItemsMap[ingredient.NodeGUID];
+
 			cell.SpawnItem(item);
 		}
 	}

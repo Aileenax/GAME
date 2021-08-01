@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GramGames.CraftingSystem.DataContainers;
+﻿using GramGames.CraftingSystem.DataContainers;
 using UnityEngine;
 
 public class GridCell : MonoBehaviour
@@ -10,15 +9,20 @@ public class GridCell : MonoBehaviour
     [SerializeField] private GridCell _down;
     [SerializeField] private GridHandler _handler;
     
-    private MergableItem _item;
-    public MergableItem Item => _item;
+    [field: SerializeField] public MergableItem Item { get; private set; }
+
+    private Game _game;
+
+    private void Awake()
+    {
+        _game = Game.Instance;
+    }
 
     public void SpawnItem(NodeContainer item)
     {
 	    _handler.ClearCell(this);
 
-		var game = FindObjectOfType<Game>();
-		var obj = Instantiate(game.DraggableObjectPrefab);
+        MergableItem obj = Instantiate(_game.DraggableObjectPrefab);
 	    obj.Configure(item, this);
     }
     
@@ -32,11 +36,11 @@ public class GridCell : MonoBehaviour
 	    if (_handler == null)
 		    _handler = GetComponentInParent<GridHandler>();
        
-        if (_item != null)
-            _handler.SetCellState(_item.GetCurrentCell(), true);
+        if (Item != null)
+            _handler.SetCellState(Item.GetCurrentCell(), true);
         
-        _item = item;
-        _handler.SetCellState(this, _item != null);
+        Item = item;
+        _handler.SetCellState(this, Item != null);
     }
 
     public void SetNeighbor(GridCell neighbor, MoveDirection direction)
@@ -59,23 +63,25 @@ public class GridCell : MonoBehaviour
         }
     }
 
-
     public bool HasItem()
     {
-        return _item != null;
+        return Item != null;
     }
 
     public void ClearItem()
     {
-        if (_item != null)
+        if (Item != null)
         {
-            Destroy(_item.gameObject);
-            _item = null;
+            Destroy(Item.gameObject);
+            Item = null;
         }
     }
 }
 
 public enum MoveDirection
 {
-    Left, Right, Up, Down
+    Left, 
+    Right, 
+    Up, 
+    Down
 }
