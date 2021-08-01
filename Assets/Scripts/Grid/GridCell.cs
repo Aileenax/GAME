@@ -58,8 +58,7 @@ public class GridCell : MonoBehaviour
                 break;
             case MoveDirection.Down:
                 _down = neighbor;
-                break;
-      
+                break;  
         }
     }
 

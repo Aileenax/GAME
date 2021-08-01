@@ -16,7 +16,7 @@ MonoBehaviour:
     NodeGUID: 903239e4-6074-4dac-ba3a-37a03f935f92
     NodeText: Pistachio
     Position: {x: 452, y: 645.55994}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: b204cdf1bba804d8b8c596d87201912f, type: 3}
     Type: 0
     Exceptions: []
     DesiredType: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   - NodeGUID: 903239e4-6074-4dac-ba3a-37a03f935f92
     NodeText: Pistachio
     Position: {x: 452, y: 645.55994}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: b204cdf1bba804d8b8c596d87201912f, type: 3}
     Type: 0
     Exceptions: []
     DesiredType: 0

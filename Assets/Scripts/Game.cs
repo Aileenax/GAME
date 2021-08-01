@@ -5,8 +5,8 @@ using GramGames.CraftingSystem.DataContainers;
 
 public class Game : Singleton<Game>
 {
-	public MergableItem DraggableObjectPrefab;
-	public GridHandler MainGrid;
+	[field: SerializeField] public MergableItem DraggableObjectPrefab { get; private set; }
+	[field: SerializeField] public GridHandler MainGrid { get; private set; }
 
 	private List<string> _activeRecipes = new List<string>();
 
@@ -28,6 +28,13 @@ public class Game : Singleton<Game>
 
 	public void ReloadLevel(int difficulty = 1)
 	{
+		float randomValue;
+		NodeContainer chosenItem;
+		NodeData chosenIngredient;
+		NodeContainer itemToSpawn;
+		System.Random randomItem = new System.Random();
+		System.Random randomIngredient = new System.Random();
+
 		// clear the board
 		GridCell[] fullCells = MainGrid.GetFullCells.ToArray();
 
@@ -38,24 +45,33 @@ public class Game : Singleton<Game>
 		_activeRecipes.Clear();
 		difficulty = Mathf.Max(difficulty, 1);
 
-		for (int i = 0; i < difficulty; i++)
-		{
-			// a 'recipe' has more than 1 ingredient, else it is just a raw ingredient.
-			string recipe = ItemUtils.RecipeMap.FirstOrDefault(kvp => kvp.Value.Count > 1).Key;
-			_activeRecipes.Add(recipe);
-		}
-
 		// populate the board
 		GridCell[] emptyCells = MainGrid.GetEmptyCells.ToArray();
 
 		foreach (GridCell cell in emptyCells)
 		{
-			string chosenRecipe = _activeRecipes[0];
-			NodeData[] ingredients = ItemUtils.RecipeMap[chosenRecipe].ToArray();
-			NodeData ingredient = ingredients[0];
-			NodeContainer item = ItemUtils.ItemsMap[ingredient.NodeGUID];
+			randomValue = Random.value;
 
-			cell.SpawnItem(item);
+			// GridCell should spawn an item
+			if (randomValue <= MainGrid.ItemDensity)
+			{
+				chosenItem = MainGrid.ItemsToSpawn.OrderBy(item => randomItem.Next()).FirstOrDefault();
+
+				// a 'recipe' has more than 1 ingredient, else it is just a raw ingredient.
+				if (chosenItem.NodeLinks.Count > 1)
+				{
+					// Choose a random ingredient from the recipe to spawn into the GridCell
+					chosenIngredient = ItemUtils.RecipeMap[chosenItem.MainNodeData.NodeGUID].OrderBy(ingredients => randomIngredient.Next()).FirstOrDefault();
+					itemToSpawn = ItemUtils.ItemsMap[chosenIngredient.NodeGUID];
+				}
+				// This is just a raw ingredient so spawn that into the GridCell
+				else
+				{
+					itemToSpawn = chosenItem;
+				}
+
+				cell.SpawnItem(itemToSpawn);
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using GramGames.CraftingSystem.DataContainers;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,14 +7,19 @@ public class GridHandler : MonoBehaviour
 {
 	#region fields
 
-	//temp until refactor generation code
+	// temp until refactor generation code
 	[SerializeField] List<Transform> _rows = new List<Transform>();
 
-	//caching
+	// caching
 	[SerializeField] protected List<GridCell> _emptyCells;
 	[SerializeField] protected List<GridCell> _fullCells;
 	public List<GridCell> GetFullCells => _fullCells;
 	public List<GridCell> GetEmptyCells => _emptyCells;
+
+	// chance of the grid cell spawning an item (0 = 0%, 1 = 100%)
+	[Range(0, 1)]
+	[field: SerializeField] public float ItemDensity = 1;
+	[field: SerializeField] public List<NodeContainer> ItemsToSpawn = new List<NodeContainer>();
 
 	#endregion
 
@@ -33,7 +38,7 @@ public class GridHandler : MonoBehaviour
 
 			for (int j = 0; j < currentRow.Count; j++)
 			{
-				//each cell
+				// each cell
 				currentRow[j].SetNeighbor(upperRow?[j], MoveDirection.Up);
 				currentRow[j].SetNeighbor(lowerRow?[j], MoveDirection.Down);
 
@@ -44,10 +49,9 @@ public class GridHandler : MonoBehaviour
 				currentRow[j].SetNeighbor(rightN, MoveDirection.Right);
 				currentRow[j].SetHandler(this);
 				
-				//cache the cell as empty
+				// cache the cell as empty
 				_emptyCells.Add(currentRow[j]);
 			}
-
 		}
 	}
 
