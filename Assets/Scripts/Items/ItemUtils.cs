@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GramGames.CraftingSystem.DataContainers;
 using UnityEngine;
@@ -11,19 +10,23 @@ public static class ItemUtils
 
 	public static void InitializeMap()
 	{
-		var nodes = Resources.LoadAll<NodeContainer>("CraftingObjects");
-		foreach (var node in nodes)
+		ItemsMap.Clear();
+		RecipeMap.Clear();
+
+		NodeContainer[] nodes = Resources.LoadAll<NodeContainer>("CraftingObjects");
+
+		foreach (NodeContainer node in nodes)
 		{
 			ItemsMap.Add(node.MainNodeData.NodeGUID, node);
 			
 			if (node.IsRawMaterial())
 				continue;
 
-			var ingredients = node.GetRecipe();
+			Dictionary<NodeData, int> ingredients = node.GetRecipe();
 			
 			if (RecipeMap.ContainsKey(node.MainNodeData.NodeGUID) == false)
 			{
-				var dt = new HashSet<NodeData>(ingredients.Keys);
+				HashSet<NodeData> dt = new HashSet<NodeData>(ingredients.Keys);
 				RecipeMap.Add(node.MainNodeData.NodeGUID, dt);
 			}
 			else
@@ -57,7 +60,7 @@ public static class ItemUtils
 
 		if (RecipeMap.ContainsKey(droppedNodeId))
 		{
-			var possibilities = RecipeMap[droppedNodeId];
+			HashSet<NodeData> possibilities = RecipeMap[droppedNodeId];
 			Debug.Log($"possibles recipes: {possibilities.Count}");
 		}
 
@@ -70,13 +73,13 @@ public static class ItemUtils
 	{
 		int quantityFound = 0;
 
-		foreach (var entries in RecipeMap)
+		foreach (KeyValuePair<string, HashSet<NodeData>> entries in RecipeMap)
 		{
 			if (items.Length != entries.Value.Count)
 				continue;
 			
 			bool hasAllIngredient = true;
-			foreach (var ingredient in entries.Value)
+			foreach (NodeData ingredient in entries.Value)
 			{
 				NodeContainer ingr = ItemsMap[ingredient.NodeGUID];
 				if (items.Contains(ingr) == false)

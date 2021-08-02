@@ -16,7 +16,7 @@ MonoBehaviour:
     NodeGUID: f2e97e65-e3bf-4b81-b3cf-7ecae515ecec
     NodeText: Cocoa
     Position: {x: 450.56, y: 329}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: c0b439d91441c4c46a70db4a901306bc, type: 3}
     Type: 0
     Exceptions: []
     DesiredType: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   - NodeGUID: f2e97e65-e3bf-4b81-b3cf-7ecae515ecec
     NodeText: Cocoa
     Position: {x: 450.56, y: 329}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: c0b439d91441c4c46a70db4a901306bc, type: 3}
     Type: 0
     Exceptions: []
     DesiredType: 0
