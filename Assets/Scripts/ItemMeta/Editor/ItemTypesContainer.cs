@@ -29,6 +29,7 @@ public class ItemTypesContainer : ScriptableObject
 			}
 			streamWriter.WriteLine("}");
 		}
+
 		AssetDatabase.Refresh();
 	}
 }
