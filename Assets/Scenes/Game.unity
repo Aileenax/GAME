@@ -2203,7 +2203,7 @@ MonoBehaviour:
   - {fileID: 210715031}
   - {fileID: 2050903153}
   _fullCells: []
-  ItemDensity: 1
+  ItemDensity: 0.272
   ItemsToSpawn:
   - {fileID: 11400000, guid: 814d39dfb7f9db947957d0b41334fcdf, type: 2}
   - {fileID: 11400000, guid: 25ff1140b10f55b4ab05d718928fb90a, type: 2}

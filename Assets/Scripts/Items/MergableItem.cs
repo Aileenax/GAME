@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using GramGames.CraftingSystem.DataContainers;
+﻿using GramGames.CraftingSystem.DataContainers;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class MergableItem : DraggableObject
 {
-	public SpriteRenderer spriteRenderer;
-	
-    private SpriteRenderer _sprite;
+    [SerializeField] private LayerMask _mask;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     private GridCell _parentCell;
     private RayCastHandler<GridCell> _rayCast;
 
-    private NodeContainer _itemData;	// this is our item definition
-    public NodeContainer ItemData => _itemData;
+    public NodeContainer ItemData { get; private set; }
     
     private void Awake()
     {
@@ -27,12 +20,12 @@ public class MergableItem : DraggableObject
     /// </summary>
     public void Configure(NodeContainer item, GridCell current)
     {
-	    _itemData = item;
+	    ItemData = item;
 	    
-	    if (_itemData != null)
-	        spriteRenderer.sprite = _itemData.MainNodeData.Sprite;
+	    if (ItemData != null)
+	        _spriteRenderer.sprite = ItemData.MainNodeData.Sprite;
         else
-	        spriteRenderer.sprite = null;
+	        _spriteRenderer.sprite = null;
 	    
 	    AssignToCell(current);
     }
@@ -49,10 +42,9 @@ public class MergableItem : DraggableObject
     {
     }
 
-    public LayerMask mask;
     protected override void DoEndDrag()
     {
-        if (_rayCast.RayCastDown(mask))
+        if (_rayCast.RayCastDown(_mask))
         {
             //we hit a slot
             var targets = _rayCast.GetTargets();
@@ -60,7 +52,8 @@ public class MergableItem : DraggableObject
             {
                 if (slot.HasItem() == false)
                 {
-                    Debug.Log("end");
+                    // Remove the item from the original cell before moving it to the new one
+                    _parentCell.EmptyCell();
                     AssignToCell(slot);
                     return;
                 }
@@ -72,7 +65,6 @@ public class MergableItem : DraggableObject
             //return to previous slot
             if (_parentCell != null)
             {
-	            Debug.Log("off grid");
                 AssignToCell(_parentCell);
             }
         }

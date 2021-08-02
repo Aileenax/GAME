@@ -75,6 +75,11 @@ public class GridCell : MonoBehaviour
             Item = null;
         }
     }
+
+    public void EmptyCell()
+    {
+        Item = null;
+    }
 }
 
 public enum MoveDirection
