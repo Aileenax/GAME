@@ -16,7 +16,7 @@ MonoBehaviour:
     NodeGUID: 49ad05fb-996f-47a6-890b-21945c508e4f
     NodeText: AnySwordExceptGoldenAndBigSword
     Position: {x: 1662.5505, y: 668.5722}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 1cae5ab3b405849c692f0f8fbb7fcae2, type: 3}
     Type: 1
     Exceptions:
     - {fileID: 11400000, guid: 193f0f5cd3b634804984b07b522fd50f, type: 2}
@@ -28,7 +28,7 @@ MonoBehaviour:
   - NodeGUID: 49ad05fb-996f-47a6-890b-21945c508e4f
     NodeText: AnySwordExceptGoldenAndBigSword
     Position: {x: 1662.5505, y: 668.5722}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 1cae5ab3b405849c692f0f8fbb7fcae2, type: 3}
     Type: 1
     Exceptions:
     - {fileID: 11400000, guid: 193f0f5cd3b634804984b07b522fd50f, type: 2}

@@ -16,7 +16,7 @@ MonoBehaviour:
     NodeGUID: b79c91fc-6065-455a-ad95-6807300ba1e7
     NodeText: Anise
     Position: {x: 448, y: 488.84003}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 7814fe949c9c040838ea8cb0690906e7, type: 3}
     Type: 0
     Exceptions: []
     DesiredType: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   - NodeGUID: b79c91fc-6065-455a-ad95-6807300ba1e7
     NodeText: Anise
     Position: {x: 448, y: 488.84003}
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 7814fe949c9c040838ea8cb0690906e7, type: 3}
     Type: 0
     Exceptions: []
     DesiredType: 0
