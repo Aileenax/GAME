@@ -8,14 +8,20 @@ public class GridCell : MonoBehaviour
     [SerializeField] private GridCell _up;
     [SerializeField] private GridCell _down;
     [SerializeField] private GridHandler _handler;
-    
+
     [field: SerializeField] public MergableItem Item { get; private set; }
+    [field: SerializeField] public int RowIndex { get; private set; }
 
     private Game _game;
 
     private void Awake()
     {
         _game = Game.Instance;
+    }
+
+    public void SetRowIndex(int index)
+    {
+        RowIndex = index;
     }
 
     public void SpawnItem(NodeContainer item)
@@ -40,7 +46,7 @@ public class GridCell : MonoBehaviour
             _handler.SetCellState(Item.GetCurrentCell(), true);
         
         Item = item;
-        _handler.SetCellState(this, Item != null);
+        _handler.SetCellState(this, Item == null);
     }
 
     public void SetNeighbor(GridCell neighbor, MoveDirection direction)

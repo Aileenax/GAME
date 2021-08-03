@@ -7,8 +7,11 @@ public class GridHandler : MonoBehaviour
 {
 	#region fields
 
-	// temp until refactor generation code
-	[SerializeField] List<Transform> _rows = new List<Transform>();
+	[SerializeField] private int _numOfRows;
+	[SerializeField] private int _numOfColumns;
+	[SerializeField] private float _tileSpacing = 1f;
+	[SerializeField] private GameObject _cellPrefab;
+	[SerializeField] private GameObject _gridPlayArea;
 
 	// caching
 	[SerializeField] protected List<GridCell> _emptyCells;
@@ -25,16 +28,52 @@ public class GridHandler : MonoBehaviour
 
 	#region initialization
 
-	public void HackishInitialization()
+	private void Awake()
 	{
 		ClearExistingCells();
 
-		for (int i = 0; i < _rows.Count; i++)
+		RectTransform rectTransform = _gridPlayArea.GetComponent<RectTransform>();
+		BoxCollider2D cellBoxCollider = _cellPrefab.GetComponent<BoxCollider2D>();
+		GameObject cell;
+		GridCell gridCell;
+		List<GridCell> gridCells = new List<GridCell>();
+		float posX;
+		float posY;
+
+		// We want the upper left position of the grid's play area to start instantiating the cells from
+		// https://stackoverflow.com/questions/43864931/find-the-upper-left-position-of-a-canvas/43865340
+		float minX = rectTransform.position.x + rectTransform.rect.xMin;
+		float maxY = rectTransform.position.y + rectTransform.rect.yMax;
+
+		// Need to convert to world space then offset it by half the size of the cell so it fits inside the grid
+		Vector3 topLeft = Camera.main.ScreenToWorldPoint(new Vector3(minX, maxY, 0)) + new Vector3(cellBoxCollider.size.x / 2, -cellBoxCollider.size.y / 2, 0);
+		topLeft.z = 0;
+		
+		for (int i = 0; i < _numOfRows; i++)
+		{
+			for (int j = 0; j < _numOfColumns; j++)
+			{
+				cell = Instantiate(_cellPrefab, transform);
+
+				posX = j * _tileSpacing;
+				posY = i * _tileSpacing;
+
+				// Start placing the cells from the top left corner
+				cell.transform.position = new Vector2(topLeft.x + posX, topLeft.y - posY);
+
+				gridCell = cell.GetComponent<GridCell>();
+
+				gridCell.SetRowIndex(i);
+				gridCells.Add(gridCell);
+			}
+		}
+
+		for (int i = 0; i < _numOfRows; i++)
 		{
 			//each row
-			List<GridCell> currentRow = _rows[i].GetComponentsInChildren<GridCell>().ToList();
-			List<GridCell> upperRow = i > 0 ? _rows[i - 1].GetComponentsInChildren<GridCell>().ToList() : null;
-			List<GridCell> lowerRow = i + 1 < _rows.Count ? _rows[i + 1].GetComponentsInChildren<GridCell>().ToList() : null;
+			List<GridCell> currentRow = gridCells.Where(cell => cell.RowIndex == i).ToList();
+			List<GridCell> upperRow = i > 0 ? gridCells.Where(cell => cell.RowIndex == i - 1).ToList() : null;
+			List<GridCell> lowerRow = i + 1 < _numOfRows ? gridCells.Where(cell => cell.RowIndex == i + 1).ToList() : null;
 
 			for (int j = 0; j < currentRow.Count; j++)
 			{
@@ -48,7 +87,7 @@ public class GridHandler : MonoBehaviour
 				var rightN = j < currentRow.Count - 1 ? currentRow?[j + 1] : null;
 				currentRow[j].SetNeighbor(rightN, MoveDirection.Right);
 				currentRow[j].SetHandler(this);
-				
+
 				// cache the cell as empty
 				_emptyCells.Add(currentRow[j]);
 			}
@@ -59,14 +98,6 @@ public class GridHandler : MonoBehaviour
 	{
 		_emptyCells = new List<GridCell>();
 		_fullCells = new List<GridCell>();
-	}
-
-	private void Awake()
-	{
-		foreach (var cell in _emptyCells)
-		{
-			cell.SetHandler(this);
-		}
 	}
 
 	#endregion
@@ -93,7 +124,6 @@ public class GridHandler : MonoBehaviour
 		if (!_emptyCells.Contains(cell))
 			_emptyCells.Add(cell);
 	}
-
 
 	public void SetCellState(GridCell cell, bool empty)
 	{
